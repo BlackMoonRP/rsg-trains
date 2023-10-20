@@ -82,7 +82,6 @@ local function StartTramRoute(currentTram)
                 SetTrainCruiseSpeed(currentTram, cruisespeed)
                 Wait(200)
                 if tramdistance < Config.RouteOneTramStops[i].dst2 then
-                    print('you are here')
                     SetTrainCruiseSpeed(currentTram, stopspeed)
                     Config.printdebug('Tram Stopped At: '..Config.RouteOneTramStops[i].name)
                     Wait(Config.RouteOneTramStops[i].waittime)
