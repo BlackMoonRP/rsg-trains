@@ -4,18 +4,58 @@ Config.printdebug = function(message)
     print(message)    
 end
 
-Config.RouteOneTrainSetup = {
+Config.TrainSetup = {
+
+    -- trains
     {
+        trainname = 'Orient Express',
+        trainid = 'train1',
         trainhash = -577630801,
         startcoords = vector3(-504.0194, -432.0699, 82.54294),
         route = 'trainRouteOne',
-        stopspeed = 0.0,
-        cruisespeed = 5.0,
-        fullspeed = 15.0,
-    }
+    },
+    {
+        trainname = 'Flying Scotsman',
+        trainid = 'train2',
+        trainhash = -577630801,
+        startcoords = vector3(2729.5883, -1459.727, 45.903129),
+        route = 'trainRouteOne',
+    },
+    {
+        trainname = 'Big Smoke',
+        trainid = 'train3',
+        trainhash = -577630801,
+        startcoords = vector3(3041.1042, 1490.3707, 50.296001),
+        route = 'trainRouteOne',
+    },
+    {
+        trainname = 'Thomas Tank',
+        trainid = 'train3',
+        trainhash = -577630801,
+        startcoords = vector3(551.72705, 1730.3668, 187.77885),
+        route = 'trainRouteOne',
+    },
+
+    -- trams
+    {
+        trainname = 'City Tram One',
+        trainid = 'tram1',
+        trainhash = -1083616881,
+        startcoords = vector3(2608.437, -1172.225, 53.058986),
+        route = 'tramRouteOne',
+    },
+    {
+        trainname = 'City Tram Two',
+        trainid = 'tram2',
+        trainhash = -1083616881,
+        startcoords = vector3(2815.7536, -1278.889, 47.043014),
+        route = 'tramRouteOne',
+    },
+    
 }
 
-Config.RouteOneStops = {
+-- train route one
+Config.RouteOneTrainStops = {
     {
         dst = 220.0,
         dst2 = 4.0,
@@ -75,18 +115,7 @@ Config.RouteOneStops = {
 
 }
 
--- tram
-Config.RouteOneTramSetup = {
-    {
-        trainhash = -1083616881,
-        startcoords = vector3(2608.437, -1172.225, 53.058986),
-        route = 'tramRouteOne',
-        stopspeed = 0.0,
-        cruisespeed = 2.0,
-        fullspeed = 5.0,
-    }
-}
-
+-- tram route one
 Config.RouteOneTramStops = {
 
     {

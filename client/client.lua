@@ -1,129 +1,90 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
 -------------------------------------------------------------------------------
-
-local trainrouteone = false
-
-local function StartTrainRoute(currentTrain)
-    while true do
-        Wait(0)
-        for i = 1, #Config.RouteOneStops do
-            local coords = GetEntityCoords(currentTrain)
-            local traincoords = vector3(coords.x, coords.y, coords.z)
-            local distance = #(Config.RouteOneStops[i].coords - traincoords)
-            local stopspeed = 0.0
-            local cruisespeed = 5.0
-            local fullspeed = 15.0
-            if distance < Config.RouteOneStops[i].dst then
-                SetTrainCruiseSpeed(currentTrain, cruisespeed)
-                Wait(200)
-                if distance < Config.RouteOneStops[i].dst2 then
-                    SetTrainCruiseSpeed(currentTrain, stopspeed)
-                    Config.printdebug('Train Stopped At: '..Config.RouteOneStops[i].name)
-                    Wait(Config.RouteOneStops[i].waittime)
-                    Config.printdebug('Train Leaving From: '..Config.RouteOneStops[i].name)
-                    SetTrainCruiseSpeed(currentTrain, cruisespeed)
-                    Wait(10000)
-                end
-            elseif distance > Config.RouteOneStops[i].dst then
-                SetTrainCruiseSpeed(currentTrain, fullspeed)
-                Wait(25)
-            end
+-- spawn train function
+-------------------------------------------------------------------------------
+local function SpawnTrain(trainid, route, trainhash, startcoords)
+    SetRandomTrains(false)
+    local trainWagons = Citizen.InvokeNative(0x635423D55CA84FC8, trainhash)
+    for wagonIndex = 0, trainWagons - 1 do
+        local trainWagonModel = Citizen.InvokeNative(0x8DF5F6A19F99F0D5, trainhash, wagonIndex)
+        while not HasModelLoaded(trainWagonModel) do
+            Citizen.InvokeNative(0xFA28FE3A6246FC30, trainWagonModel, 1)
+            Citizen.Wait(100)
         end
     end
+    train = Citizen.InvokeNative(0xc239dbd9a57d2a71, trainhash, startcoords, 0, 0, 1, 0)
+    SetTrainSpeed(train, 0.0)
+    Citizen.InvokeNative(0x05254BA0B44ADC16, train, false)
+    SetModelAsNoLongerNeeded(train)
+    return train
 end
 
--- spawn trainrouteone
+-------------------------------------------------------------------------------
+-- send info to spawn train / train route
+-------------------------------------------------------------------------------
 Citizen.CreateThread(function()
-    while true do
-        Wait(1)
-        if trainrouteone == false then
-            for k, v in pairs(Config.RouteOneTrainSetup) do
-                SetRandomTrains(false)
-                --requestmodel--
-                local trainWagons = Citizen.InvokeNative(0x635423D55CA84FC8, v.trainhash)
-                for wagonIndex = 0, trainWagons - 1 do
-                    local trainWagonModel = Citizen.InvokeNative(0x8DF5F6A19F99F0D5, v.trainhash, wagonIndex)
-                    while not HasModelLoaded(trainWagonModel) do
-                        Citizen.InvokeNative(0xFA28FE3A6246FC30, trainWagonModel, 1)
-                        Citizen.Wait(100)
-                    end
-                end
-                --spawn train--
-                local train = Citizen.InvokeNative(0xc239dbd9a57d2a71, v.trainhash, v.startcoords, 0, 0, 1, 0)
-                SetTrainSpeed(train, 0.0)
-                Citizen.InvokeNative(0x05254BA0B44ADC16, train, false)
-                SetModelAsNoLongerNeeded(train)
-                StartTrainRoute(train)
-                trainrouteone = true
-            end
-        end
-        if trainrouteone == true then
-            Wait(2500)
-        end
+    for k, v in ipairs(Config.TrainSetup) do
+        SpawnTrain(v.trainid, v.route, v.trainhash, v.startcoords)
+        TriggerEvent('rsg-trains:client:startroute', train, v.route, v.trainname)
     end
 end)
 
 -------------------------------------------------------------------------------
-
-local tramrouteone = false
-
-local function StartTramRoute(currentTram)
+-- train route
+-------------------------------------------------------------------------------
+RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainname)
     while true do
         Wait(0)
-        for i = 1, #Config.RouteOneTramStops do
-            local coords = GetEntityCoords(currentTram)
-            local tramcoords = vector3(coords.x, coords.y, coords.z)
-            local tramdistance = #(Config.RouteOneTramStops[i].coords - tramcoords)
-            local stopspeed = 0.0
-            local cruisespeed = 2.0
-            local fullspeed = 5.0
-            if tramdistance < Config.RouteOneTramStops[i].dst then
-                SetTrainCruiseSpeed(currentTram, cruisespeed)
-                Wait(200)
-                if tramdistance < Config.RouteOneTramStops[i].dst2 then
-                    SetTrainCruiseSpeed(currentTram, stopspeed)
-                    Config.printdebug('Tram Stopped At: '..Config.RouteOneTramStops[i].name)
-                    Wait(Config.RouteOneTramStops[i].waittime)
-                    Config.printdebug('Tram Leaving From: '..Config.RouteOneTramStops[i].name)
-                    SetTrainCruiseSpeed(currentTram, cruisespeed)
-                    Wait(10000)
-                end
-            elseif tramdistance > Config.RouteOneTramStops[i].dst then
-                SetTrainCruiseSpeed(currentTram, fullspeed)
-                Wait(25)
-            end
-        end
-    end
-end
-
--- spawn tramrouteone
-Citizen.CreateThread(function()
-    while true do
-        Wait(1)
-        if tramrouteone == false then
-            for k, v in pairs(Config.RouteOneTramSetup) do
-                SetRandomTrains(false)
-                --requestmodel--
-                local trainWagons = Citizen.InvokeNative(0x635423D55CA84FC8, v.trainhash)
-                for wagonIndex = 0, trainWagons - 1 do
-                    local trainWagonModel = Citizen.InvokeNative(0x8DF5F6A19F99F0D5, v.trainhash, wagonIndex)
-                    while not HasModelLoaded(trainWagonModel) do
-                        Citizen.InvokeNative(0xFA28FE3A6246FC30, trainWagonModel, 1)
-                        Citizen.Wait(100)
+        if train ~= nil and route == 'trainRouteOne' then
+            for i = 1, #Config.RouteOneTrainStops do
+                local coords = GetEntityCoords(train)
+                local traincoords = vector3(coords.x, coords.y, coords.z)
+                local distance = #(Config.RouteOneTrainStops[i].coords - traincoords)
+                local stopspeed = 0.0
+                local cruisespeed = 5.0
+                local fullspeed = 15.0
+                if distance < Config.RouteOneTrainStops[i].dst then
+                    SetTrainCruiseSpeed(train, cruisespeed)
+                    Wait(200)
+                    if distance < Config.RouteOneTrainStops[i].dst2 then
+                        SetTrainCruiseSpeed(train, stopspeed)
+                        Config.printdebug(trainname.. ' stopped at '..Config.RouteOneTrainStops[i].name)
+                        Wait(Config.RouteOneTrainStops[i].waittime)
+                        Config.printdebug(trainname.. ' is leaving '..Config.RouteOneTrainStops[i].name)
+                        SetTrainCruiseSpeed(train, cruisespeed)
+                        Wait(10000)
                     end
+                elseif distance > Config.RouteOneTrainStops[i].dst then
+                    SetTrainCruiseSpeed(train, fullspeed)
+                    Wait(25)
                 end
-                --spawn tram --
-                local tram = Citizen.InvokeNative(0xc239dbd9a57d2a71, v.trainhash, v.startcoords, 0, 0, 1, 0)
-                SetTrainSpeed(tram, 0.0)
-                Citizen.InvokeNative(0x05254BA0B44ADC16, tram, false)
-                SetModelAsNoLongerNeeded(tram)
-                StartTramRoute(tram)
-                tramrouteone = true
             end
         end
-        if tramrouteone == true then
-            Wait(2500)
+        if train ~= nil and route == 'tramRouteOne' then
+            for i = 1, #Config.RouteOneTramStops do
+                local coords = GetEntityCoords(train)
+                local traincoords = vector3(coords.x, coords.y, coords.z)
+                local distance = #(Config.RouteOneTramStops[i].coords - traincoords)
+                local stopspeed = 0.0
+                local cruisespeed = 2.0
+                local fullspeed = 5.0
+                if distance < Config.RouteOneTramStops[i].dst then
+                    SetTrainCruiseSpeed(train, cruisespeed)
+                    Wait(200)
+                    if distance < Config.RouteOneTramStops[i].dst2 then
+                        SetTrainCruiseSpeed(train, stopspeed)
+                        Config.printdebug(trainname.. ' stopped at '..Config.RouteOneTramStops[i].name)
+                        Wait(Config.RouteOneTramStops[i].waittime)
+                        Config.printdebug(trainname.. ' is leaving '..Config.RouteOneTramStops[i].name)
+                        SetTrainCruiseSpeed(train, cruisespeed)
+                        Wait(10000)
+                    end
+                elseif distance > Config.RouteOneTramStops[i].dst then
+                    SetTrainCruiseSpeed(train, fullspeed)
+                    Wait(25)
+                end
+            end
         end
     end
 end)
@@ -167,3 +128,4 @@ Citizen.CreateThread(function()
         Wait(10000)
     end
 end)
+-------------------------------------------------------------------------------
