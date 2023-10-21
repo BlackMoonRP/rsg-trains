@@ -38,13 +38,13 @@ end)
 RegisterNetEvent('rsg-trains:client:trackswithches', function(train, route)
 
     while true do
-        Wait(0)
+        Wait(1000)
+        local coords = GetEntityCoords(train)
+        local traincoords = vector3(coords.x, coords.y, coords.z)
         -- valentine route
         if train ~= nil and route == 'trainRouteOne' then
             -- set track switching
             for i = 1, #Config.RouteOneTrainSwitches do
-                local coords = GetEntityCoords(train)
-                local traincoords = vector3(coords.x, coords.y, coords.z)
                 local switchdist = #(Config.RouteOneTrainSwitches[i].coords - traincoords)
                 if switchdist < 15 then
                     Citizen.InvokeNative(0xE6C5E2125EB210C1, Config.RouteOneTrainSwitches[i].trainTrack, Config.RouteOneTrainSwitches[i].junctionIndex, Config.RouteOneTrainSwitches[i].enabled)
@@ -52,11 +52,10 @@ RegisterNetEvent('rsg-trains:client:trackswithches', function(train, route)
                 end
             end
         end
+        -- big loop route
         if train ~= nil and route == 'trainRouteTwo' then
             -- set track switching
             for i = 1, #Config.RouteTwoTrainSwitches do
-                local coords = GetEntityCoords(train)
-                local traincoords = vector3(coords.x, coords.y, coords.z)
                 local switchdist = #(Config.RouteTwoTrainSwitches[i].coords - traincoords)
                 if switchdist < 15 then
                     Citizen.InvokeNative(0xE6C5E2125EB210C1, Config.RouteTwoTrainSwitches[i].trainTrack, Config.RouteTwoTrainSwitches[i].junctionIndex, Config.RouteTwoTrainSwitches[i].enabled)
