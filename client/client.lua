@@ -21,22 +21,62 @@ local function SpawnTrain(trainid, route, trainhash, startcoords)
 end
 
 -------------------------------------------------------------------------------
--- send info to spawn train / train route
+-- send info to spawn train / train track switches / train route
 -------------------------------------------------------------------------------
 Citizen.CreateThread(function()
     for k, v in ipairs(Config.TrainSetup) do
         SpawnTrain(v.trainid, v.route, v.trainhash, v.startcoords)
+        Citizen.InvokeNative(0xBA8818212633500A, train, 0, 1)
+        TriggerEvent('rsg-trains:client:trackswithches', train, v.route)
         TriggerEvent('rsg-trains:client:startroute', train, v.route, v.trainname)
     end
 end)
 
 -------------------------------------------------------------------------------
--- train route
+-- train track switching system
+-------------------------------------------------------------------------------
+RegisterNetEvent('rsg-trains:client:trackswithches', function(train, route)
+
+    while true do
+        Wait(0)
+        -- valentine route
+        if train ~= nil and route == 'trainRouteOne' then
+            -- set track switching
+            for i = 1, #Config.RouteOneTrainSwitches do
+                local coords = GetEntityCoords(train)
+                local traincoords = vector3(coords.x, coords.y, coords.z)
+                local switchdist = #(Config.RouteOneTrainSwitches[i].coords - traincoords)
+                if switchdist < 15 then
+                    Citizen.InvokeNative(0xE6C5E2125EB210C1, Config.RouteOneTrainSwitches[i].trainTrack, Config.RouteOneTrainSwitches[i].junctionIndex, Config.RouteOneTrainSwitches[i].enabled)
+                    Citizen.InvokeNative(0x3ABFA128F5BF5A70, Config.RouteOneTrainSwitches[i].trainTrack, Config.RouteOneTrainSwitches[i].junctionIndex, Config.RouteOneTrainSwitches[i].enabled)
+                end
+            end
+        end
+        if train ~= nil and route == 'trainRouteTwo' then
+            -- set track switching
+            for i = 1, #Config.RouteTwoTrainSwitches do
+                local coords = GetEntityCoords(train)
+                local traincoords = vector3(coords.x, coords.y, coords.z)
+                local switchdist = #(Config.RouteTwoTrainSwitches[i].coords - traincoords)
+                if switchdist < 15 then
+                    Citizen.InvokeNative(0xE6C5E2125EB210C1, Config.RouteTwoTrainSwitches[i].trainTrack, Config.RouteTwoTrainSwitches[i].junctionIndex, Config.RouteTwoTrainSwitches[i].enabled)
+                    Citizen.InvokeNative(0x3ABFA128F5BF5A70, Config.RouteTwoTrainSwitches[i].trainTrack, Config.RouteTwoTrainSwitches[i].junctionIndex, Config.RouteTwoTrainSwitches[i].enabled)
+                end
+            end
+        end
+    end
+
+end)
+
+-------------------------------------------------------------------------------
+-- train route system
 -------------------------------------------------------------------------------
 RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainname)
+
     while true do
         Wait(0)
         if train ~= nil and route == 'trainRouteOne' then
+            -- train route
             for i = 1, #Config.RouteOneTrainStops do
                 local coords = GetEntityCoords(train)
                 local traincoords = vector3(coords.x, coords.y, coords.z)
@@ -61,32 +101,34 @@ RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainnam
                 end
             end
         end
-        if train ~= nil and route == 'tramRouteOne' then
-            for i = 1, #Config.RouteOneTramStops do
+        if train ~= nil and route == 'trainRouteTwo' then
+            -- train route
+            for i = 1, #Config.RouteTwoTrainStops do
                 local coords = GetEntityCoords(train)
                 local traincoords = vector3(coords.x, coords.y, coords.z)
-                local distance = #(Config.RouteOneTramStops[i].coords - traincoords)
+                local distance = #(Config.RouteTwoTrainStops[i].coords - traincoords)
                 local stopspeed = 0.0
-                local cruisespeed = 2.0
-                local fullspeed = 5.0
-                if distance < Config.RouteOneTramStops[i].dst then
+                local cruisespeed = 5.0
+                local fullspeed = 15.0
+                if distance < Config.RouteTwoTrainStops[i].dst then
                     SetTrainCruiseSpeed(train, cruisespeed)
                     Wait(200)
-                    if distance < Config.RouteOneTramStops[i].dst2 then
+                    if distance < Config.RouteTwoTrainStops[i].dst2 then
                         SetTrainCruiseSpeed(train, stopspeed)
-                        Config.printdebug(trainname.. ' stopped at '..Config.RouteOneTramStops[i].name)
-                        Wait(Config.RouteOneTramStops[i].waittime)
-                        Config.printdebug(trainname.. ' is leaving '..Config.RouteOneTramStops[i].name)
+                        Config.printdebug(trainname.. ' stopped at '..Config.RouteTwoTrainStops[i].name)
+                        Wait(Config.RouteTwoTrainStops[i].waittime)
+                        Config.printdebug(trainname.. ' is leaving '..Config.RouteTwoTrainStops[i].name)
                         SetTrainCruiseSpeed(train, cruisespeed)
                         Wait(10000)
                     end
-                elseif distance > Config.RouteOneTramStops[i].dst then
+                elseif distance > Config.RouteTwoTrainStops[i].dst then
                     SetTrainCruiseSpeed(train, fullspeed)
                     Wait(25)
                 end
             end
         end
     end
+    
 end)
 
 -------------------------------------------------------------------------------
