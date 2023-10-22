@@ -63,12 +63,23 @@ RegisterNetEvent('rsg-trains:client:trackswithches', function(train, route)
                 end
             end
         end
+        -- saint denis tram route
+        if train ~= nil and route == 'tramRouteOne' then
+            -- set track switching
+            for i = 1, #Config.RouteOneTramSwitches do
+                local switchdist = #(Config.RouteOneTramSwitches[i].coords - traincoords)
+                if switchdist < 15 then
+                    Citizen.InvokeNative(0xE6C5E2125EB210C1, Config.RouteOneTramSwitches[i].trainTrack, Config.RouteOneTramSwitches[i].junctionIndex, Config.RouteOneTramSwitches[i].enabled)
+                    Citizen.InvokeNative(0x3ABFA128F5BF5A70, Config.RouteOneTramSwitches[i].trainTrack, Config.RouteOneTramSwitches[i].junctionIndex, Config.RouteOneTramSwitches[i].enabled)
+                end
+            end
+        end
     end
 
 end)
 
 -------------------------------------------------------------------------------
--- train route system
+-- train/tram route system
 -------------------------------------------------------------------------------
 RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainname)
 
@@ -88,9 +99,9 @@ RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainnam
                     Wait(200)
                     if distance < Config.RouteOneTrainStops[i].dst2 then
                         SetTrainCruiseSpeed(train, stopspeed)
-                        Config.printdebug(trainname.. ' stopped at '..Config.RouteOneTrainStops[i].name)
+                        Config.PrintDebug(trainname.. ' stopped at '..Config.RouteOneTrainStops[i].name)
                         Wait(Config.RouteOneTrainStops[i].waittime)
-                        Config.printdebug(trainname.. ' is leaving '..Config.RouteOneTrainStops[i].name)
+                        Config.PrintDebug(trainname.. ' is leaving '..Config.RouteOneTrainStops[i].name)
                         SetTrainCruiseSpeed(train, cruisespeed)
                         Wait(10000)
                     end
@@ -114,13 +125,39 @@ RegisterNetEvent('rsg-trains:client:startroute', function(train, route, trainnam
                     Wait(200)
                     if distance < Config.RouteTwoTrainStops[i].dst2 then
                         SetTrainCruiseSpeed(train, stopspeed)
-                        Config.printdebug(trainname.. ' stopped at '..Config.RouteTwoTrainStops[i].name)
+                        Config.PrintDebug(trainname.. ' stopped at '..Config.RouteTwoTrainStops[i].name)
                         Wait(Config.RouteTwoTrainStops[i].waittime)
-                        Config.printdebug(trainname.. ' is leaving '..Config.RouteTwoTrainStops[i].name)
+                        Config.PrintDebug(trainname.. ' is leaving '..Config.RouteTwoTrainStops[i].name)
                         SetTrainCruiseSpeed(train, cruisespeed)
                         Wait(10000)
                     end
                 elseif distance > Config.RouteTwoTrainStops[i].dst then
+                    SetTrainCruiseSpeed(train, fullspeed)
+                    Wait(25)
+                end
+            end
+        end
+        if train ~= nil and route == 'tramRouteOne' then
+            -- train route
+            for i = 1, #Config.RouteOneTramStops do
+                local coords = GetEntityCoords(train)
+                local traincoords = vector3(coords.x, coords.y, coords.z)
+                local distance = #(Config.RouteOneTramStops[i].coords - traincoords)
+                local stopspeed = 0.0
+                local cruisespeed = 1.0
+                local fullspeed = 2.0
+                if distance < Config.RouteOneTramStops[i].dst then
+                    SetTrainCruiseSpeed(train, cruisespeed)
+                    Wait(200)
+                    if distance < Config.RouteOneTramStops[i].dst2 then
+                        SetTrainCruiseSpeed(train, stopspeed)
+                        Config.PrintDebug(trainname.. ' stopped at '..Config.RouteOneTramStops[i].name)
+                        Wait(Config.RouteOneTramStops[i].waittime)
+                        Config.PrintDebug(trainname.. ' is leaving '..Config.RouteOneTramStops[i].name)
+                        SetTrainCruiseSpeed(train, cruisespeed)
+                        Wait(10000)
+                    end
+                elseif distance > Config.RouteOneTramStops[i].dst then
                     SetTrainCruiseSpeed(train, fullspeed)
                     Wait(25)
                 end

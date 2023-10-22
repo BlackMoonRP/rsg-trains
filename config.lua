@@ -1,6 +1,6 @@
 Config = {}
 
-Config.printdebug = function(message)
+Config.PrintDebug = function(message)
     print(message)    
 end
 
@@ -21,6 +21,13 @@ Config.TrainSetup = {
         startcoords = vector3(2729.5883, -1459.727, 45.903129),
         route = 'trainRouteTwo',
     },
+    {
+        trainname = 'City Tram',
+        trainid = 'train3',
+        trainhash = -1083616881,
+        startcoords = vector3(2608.539, -1171.967, 53.77959),
+        route = 'tramRouteOne',
+    },
 
 }
 
@@ -39,16 +46,16 @@ Config.RouteOneTrainSwitches = {
 -- train route one (via valentine)
 Config.RouteOneTrainStops = {
 
-    { dst = 220.0, dst2 = 10.0, coords = vector3(-318.5835, -339.5699, 89.8374),   waittime = 15000, name = "Flatneck Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(-158.177, 635.38629, 113.52156),  waittime = 15000, name = "Valentine Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(511.73336, 654.95397, 115.67657), waittime = 15000, name = "Heartland Oil Fields" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(1529.366, 422.21853, 90.355613),  waittime = 15000, name = "Emerald Station" },
-    { dst = 400.0, dst2 = 10.0, coords = vector3(2732.3334, -1445.62, 45.773746),  waittime = 15000, name = "Saint Denis Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(2895.6479, 645.07153, 57.12009),  waittime = 15000, name = "Van Horn Trading Post" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(2962.6826, 1293.7446, 43.906204), waittime = 15000, name = "Annesburg Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(572.00677, 1713.8681, 187.75619), waittime = 15000, name = "Bacchus Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(-1319.959, 388.2633, 95.492622),  waittime = 15000, name = "Wallace Station" },
-    { dst = 300.0, dst2 = 10.0, coords = vector3(-1090.563, -588.4188, 81.372642), waittime = 15000, name = "Riggs Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-318.5835, -339.5699, 89.8374),   waittime = 15000, name = "Flatneck Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-158.177, 635.38629, 113.52156),  waittime = 15000, name = "Valentine Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(511.73336, 654.95397, 115.67657), waittime = 15000, name = "Heartland Oil Fields" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(1529.366, 422.21853, 90.355613),  waittime = 15000, name = "Emerald Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2732.3334, -1445.62, 45.773746),  waittime = 15000, name = "Saint Denis Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2895.6479, 645.07153, 57.12009),  waittime = 15000, name = "Van Horn Trading Post" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2962.6826, 1293.7446, 43.906204), waittime = 15000, name = "Annesburg Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(572.00677, 1713.8681, 187.75619), waittime = 15000, name = "Bacchus Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-1319.959, 388.2633, 95.492622),  waittime = 15000, name = "Wallace Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-1090.563, -588.4188, 81.372642), waittime = 15000, name = "Riggs Station" },
 
 }
 
@@ -67,13 +74,37 @@ Config.RouteTwoTrainSwitches = {
 -- train route one (via valentine)
 Config.RouteTwoTrainStops = {
 
-    { dst = 220.0, dst2 = 10.0, coords = vector3(-318.5835, -339.5699, 89.8374),   waittime = 15000, name = "Flatneck Station" },
-    { dst = 220.0, dst2 = 10.0, coords = vector3(1238.4562, -1322.457, 76.439476), waittime = 15000, name = "Rhodes Station" },
-    { dst = 400.0, dst2 = 10.0, coords = vector3(2732.3334, -1445.62, 45.773746),  waittime = 15000, name = "Saint Denis Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(2895.6479, 645.07153, 57.12009),  waittime = 15000, name = "Van Horn Trading Post" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(2962.6826, 1293.7446, 43.906204), waittime = 15000, name = "Annesburg Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(572.00677, 1713.8681, 187.75619), waittime = 15000, name = "Bacchus Station" },
-    { dst = 180.0, dst2 = 10.0, coords = vector3(-1319.959, 388.2633, 95.492622),  waittime = 15000, name = "Wallace Station" },
-    { dst = 300.0, dst2 = 10.0, coords = vector3(-1090.563, -588.4188, 81.372642), waittime = 15000, name = "Riggs Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-318.5835, -339.5699, 89.8374),   waittime = 15000, name = "Flatneck Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(1238.4562, -1322.457, 76.439476), waittime = 15000, name = "Rhodes Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2732.3334, -1445.62, 45.773746),  waittime = 15000, name = "Saint Denis Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2895.6479, 645.07153, 57.12009),  waittime = 15000, name = "Van Horn Trading Post" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(2962.6826, 1293.7446, 43.906204), waittime = 15000, name = "Annesburg Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(572.00677, 1713.8681, 187.75619), waittime = 15000, name = "Bacchus Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-1319.959, 388.2633, 95.492622),  waittime = 15000, name = "Wallace Station" },
+    { dst = 100.0, dst2 = 10.0, coords = vector3(-1090.563, -588.4188, 81.372642), waittime = 15000, name = "Riggs Station" },
+
+}
+
+-- tram route switches
+Config.RouteOneTramSwitches = {
+
+    { coords = vector3(2615.05, -1281.2, 52.34358),  trainTrack = -1739625337,  junctionIndex = 6,  enabled = 0 },
+    { coords = vector3(2608.49, -1254.66, 52.66566), trainTrack = -1739625337,  junctionIndex = 7,  enabled = 0 },
+    { coords = vector3(2686.55, -1385.46, 46.36679), trainTrack = -1739625337,  junctionIndex = 3,  enabled = 1 },
+    { coords = vector3(2624.4, -1139.85, 51.51707),  trainTrack = -1739625337,  junctionIndex = 11, enabled = 0 },
+    
+}
+
+-- train route one (via valentine)
+Config.RouteOneTramStops = {
+
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2608.4047, -1167.057, 52.820415),   waittime = 15000, name = "Tram Stop One" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2611.6467, -1272.544, 52.68666),   waittime = 15000, name = "Tram Stop Two" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2662.8601, -1356.986, 48.655387),   waittime = 15000, name = "Tram Stop Three" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2743.4992, -1412.629, 46.014671),   waittime = 15000, name = "Tram Stop Four" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2803.9904, -1315.502, 46.508392),   waittime = 15000, name = "Tram Stop Five" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2800.0747, -1243.424, 47.573413),   waittime = 15000, name = "Tram Stop Seven" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2768.4904, -1167.407, 48.483325),   waittime = 15000, name = "Tram Stop Eight" },
+    { dst = 5.0, dst2 = 2.0, coords = vector3(2698.853, -1139.906, 50.469024),   waittime = 15000, name = "Tram Stop Nine" },
 
 }
