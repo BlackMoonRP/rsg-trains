@@ -16,6 +16,7 @@ local function SpawnTrain(trainid, route, trainhash, startcoords)
     train = Citizen.InvokeNative(0xc239dbd9a57d2a71, trainhash, startcoords, 0, 0, 1, 0)
     SetTrainSpeed(train, 0.0)
     Citizen.InvokeNative(0x05254BA0B44ADC16, train, false)
+    Citizen.InvokeNative(0x06FAACD625D80CAA, train)
     SetModelAsNoLongerNeeded(train)
     return train
 end
